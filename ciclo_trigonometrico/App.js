@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Slider from '@react-native-community/slider';
 
-// URL do backend
-const API_URL = "https://fuzzy-zebra-97p96rgjgqw4hxvvx-3000.app.github.dev/";
+// URL CORRIGIDA: Sem a barra no final
+const API_URL = "https://didactic-invention-7vg976jpjrq6hxvvx-3000.app.github.dev";
 
 export default function App() {
   // Estado para guardar o ângulo atual selecionado pelo usuário
@@ -17,8 +17,8 @@ export default function App() {
     const c = Math.cos(rad).toFixed(3);
 
     try {
-      // Faz a conexão cruzando a internet até o Codespaces usando crases
-      const resposta = await fetch(`${API_URL}api/historico`, {
+      // LINK CORRIGIDO: Adicionada a barra única explícita aqui
+      const resposta = await fetch(`${API_URL}/api/historico`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +47,6 @@ export default function App() {
   const radiano = (angulo * Math.PI) / 180;
 
   // Calcular as coordenadas X e Y do ponto dourado usando Seno e Cosseno
-  // Multiplicamos pelo raio para o ponto se mover exatamente em cima da linha azul
   const pontoX = raio * Math.cos(radiano);
   const pontoY = -raio * Math.sin(radiano); // Negativo porque no celular o Y cresce para baixo
 
@@ -121,7 +120,7 @@ const styles = StyleSheet.create({
   angleDisplay: {
     fontSize: 22,
     fontWeight: '600',
-    color: '#ffcc00', // Cor dourada para o destaque do ângulo
+    color: '#ffcc00',
     marginBottom: 30,
   },
   graphicArea: {
@@ -156,9 +155,8 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 8,
-    backgroundColor: '#ffcc00', // Ponto dourado
+    backgroundColor: '#ffcc00',
     position: 'absolute',
-    // Sombra para o ponto brilhar
     shadowColor: '#ffcc00',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
