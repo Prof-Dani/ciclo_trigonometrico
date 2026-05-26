@@ -2,9 +2,43 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Slider from '@react-native-community/slider';
 
+// URL do backend
+const API_URL = "https://fuzzy-zebra-97p96rgjgqw4hxvvx-3000.app.github.dev/";
+
 export default function App() {
   // Estado para guardar o ângulo atual selecionado pelo usuário
   const [angulo, setAngulo] = useState(0);
+
+  // Função para salvar o ângulo atual no SQLite
+  const salvarDadosNoBanco = async (anguloSalvar) => {
+    // Calcula o seno e o cosseno do ângulo que veio do Slider
+    const rad = (anguloSalvar * Math.PI) / 180;
+    const s = Math.sin(rad).toFixed(3);
+    const c = Math.cos(rad).toFixed(3);
+
+    try {
+      // Faz a conexão cruzando a internet até o Codespaces usando crases
+      const resposta = await fetch(`${API_URL}api/historico`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          angulo: Math.round(anguloSalvar),
+          seno: parseFloat(s),
+          cosseno: parseFloat(c)
+        }),
+      });
+
+      if (resposta.ok) {
+        console.log(`Ângulo ${Math.round(anguloSalvar)}° gravado com sucesso!`);
+      } else {
+        console.log("Servidor respondeu, mas houve um erro interno.");
+      }
+    } catch (error) {
+      console.log("Não foi possível conectar ao backend. Verifique se a porta 3000 está Pública.");
+    }
+  };
 
   // Raio do círculo desenhado na tela (metade do tamanho do círculo)
   const raio = 125; 
@@ -62,7 +96,8 @@ export default function App() {
           maximumTrackTintColor="#888"
           thumbTintColor="#ffcc00"
           value={angulo}
-          onValueChange={(valor) => setAngulo(valor)} // Atualiza o ângulo em tempo real
+          onValueChange={(valor) => setAngulo(valor)} // Atualiza o ângulo na tela em tempo real
+          onSlidingComplete={(valor) => salvarDadosNoBanco(valor)} // Envia para o SQLite ao soltar o botão
         />
       </View>
     </View>
